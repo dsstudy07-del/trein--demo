@@ -1,2639 +1,294 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-  <meta name="theme-color" content="#0f172a">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>🏊🚴🏃 Treinô — Douglas</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Treinô — Relatórios claros para valorizar seu trabalho</title>
   <style>
-    /* ═══════════════════════════════════════════════
-     RESET & VARIÁVEIS
-     ═══════════════════════════════════════════════ */
-    :root {
-      --bg: #0f172a;
-      --card: #1e293b;
-      --border: #334155;
-      --text: #f1f5f9;
-      --muted: #94a3b8;
-      --accent: #38bdf8;
-      --radius: clamp(8px, 2vw, 12px);
-      --pad: clamp(10px, 3vw, 20px);
-      --gap: clamp(8px, 2vw, 16px);
+    :root{
+      --bg0:#020617; --bg1:#0b1224; --card:rgba(255,255,255,.04);
+      --border:rgba(56,189,248,.22); --text:#eaf2ff; --muted:#9db0c9;
+      --p:#38bdf8; --p2:#0ea5e9; --dark:#02101d; --shadow:rgba(0,0,0,.45);
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(700px 360px at 50% 0%, rgba(56,189,248,.14), transparent 70%),
+                  linear-gradient(135deg,var(--bg0),var(--bg1));
+      color:var(--text); line-height:1.6; font-size:16px; padding:12px;
+    }
+    .wrap{max-width:520px;margin:0 auto}
+    .sheet{
+      border:1px solid rgba(255,255,255,.08);
+      background:linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
+      box-shadow:0 18px 60px var(--shadow);
+      border-radius:18px; overflow:hidden;
+    }
+    header{
+      padding:26px 18px 18px; text-align:center;
+      border-bottom:1px solid var(--border);
+      background: radial-gradient(560px 300px at 50% 0%, rgba(56,189,248,.12), transparent 72%);
+    }
+    .brand{display:flex;gap:10px;align-items:center;justify-content:center}
+    .logo{font-size:36px}
+    .name{
+      font-weight:950; font-size:44px; letter-spacing:-2px;
+      background:linear-gradient(135deg,var(--p),#a7e4ff);
+      -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+    }
+    .tag{margin-top:6px;color:var(--muted);font-style:italic;font-size:16px}
+    .hero{
+      margin-top:14px;
+      background:rgba(56,189,248,.10);
+      border:1px solid rgba(56,189,248,.32);
+      padding:14px 14px;
+      border-radius:14px;
+      font-weight:650;
+      font-size:16px;
     }
 
-    *,
-    *::before,
-    *::after {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    main{padding:18px; display:flex; flex-direction:column; gap:14px}
+    section{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:14px;
+    }
+    h2{
+      display:flex; align-items:center; gap:10px;
+      font-size:16.5px; letter-spacing:-.2px;
+      color:var(--p); font-weight:900; margin-bottom:8px;
+    }
+    p{margin-top:6px}
+    .muted{color:var(--muted); font-size:14.5px}
+    ul{list-style:none; margin-top:10px}
+    li{padding:8px 0 8px 18px; position:relative; border-bottom:1px solid rgba(255,255,255,.06)}
+    li:last-child{border-bottom:none}
+    li::before{content:"•"; position:absolute; left:0; top:6px; color:var(--p); font-weight:900}
+
+    .demo{
+      background:linear-gradient(135deg, rgba(56,189,248,.22), rgba(14,165,233,.10));
+      border:1px solid rgba(56,189,248,.38);
+      padding:14px; border-radius:14px;
+    }
+    .phone{
+      background:rgba(2,6,23,.86);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:14px; padding:12px;
+      box-shadow:0 10px 28px rgba(0,0,0,.55);
+    }
+    .top{display:flex;justify-content:space-between;align-items:center;
+      padding-bottom:10px;margin-bottom:10px;border-bottom:1px solid rgba(56,189,248,.18)}
+    .top b{color:#cfefff}
+    .pill{
+      font-size:12px; padding:4px 10px; border-radius:999px;
+      background:rgba(34,197,94,.18); border:1px solid rgba(34,197,94,.35);
+      color:#c9ffd8; font-weight:800;
+    }
+    .kpis{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:10px}
+    .kpi{
+      text-align:center; padding:10px 8px; border-radius:12px;
+      background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.08);
+    }
+    .kpi .v{font-weight:950; color:var(--p); font-size:18px}
+    .kpi .l{font-size:10px; color:var(--muted); text-transform:uppercase; letter-spacing:.6px; margin-top:2px}
+    .bars{
+      height:76px; display:flex; gap:4px; align-items:flex-end;
+      background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.08);
+      border-radius:12px; padding:10px;
+    }
+    .bar{flex:1; border-radius:8px 8px 0 0; background:linear-gradient(180deg,var(--p), rgba(56,189,248,.55)); min-height:18%}
+    .bar:nth-child(1){height:45%}.bar:nth-child(2){height:58%}.bar:nth-child(3){height:66%}
+    .bar:nth-child(4){height:52%}.bar:nth-child(5){height:84%}.bar:nth-child(6){height:95%}.bar:nth-child(7){height:72%}
+    .cap{margin-top:10px;text-align:center;color:var(--muted);font-size:13px;font-style:italic}
+
+    .steps{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+    .step{display:flex;gap:10px;align-items:flex-start}
+    .n{
+      width:30px;height:30px;border-radius:999px;flex:0 0 30px;
+      background:linear-gradient(135deg,var(--p),var(--p2));
+      color:var(--dark); font-weight:950; display:flex; align-items:center; justify-content:center;
+      box-shadow:0 10px 22px rgba(56,189,248,.25);
     }
 
-    html {
-      font-size: clamp(13px, 1.5vw, 16px);
-      -webkit-text-size-adjust: 100%;
-      scroll-behavior: smooth;
+    .prices{display:grid; grid-template-columns:1fr; gap:10px; margin-top:10px}
+    .plan{padding:12px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);text-align:center}
+    .plan.featured{border-color:rgba(56,189,248,.55); background:linear-gradient(135deg, rgba(56,189,248,.12), rgba(14,165,233,.05))}
+    .plan .t{font-weight:900}
+    .plan .v{font-weight:950;color:var(--p);font-size:22px;margin-top:2px}
+    .plan .s{color:var(--muted);font-style:italic;font-size:13px;margin-top:2px}
+
+    .cta{
+      margin: 2px 18px 18px;
+      border-radius:16px;
+      background:linear-gradient(135deg,var(--p),var(--p2));
+      color:var(--dark);
+      padding:16px;
+      text-align:center;
     }
-
-    body {
-      font-family: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      padding: var(--pad);
-      line-height: 1.5;
-      min-height: 100vh;
-      -webkit-font-smoothing: antialiased;
+    .cta h3{font-weight:950; font-size:18px; margin-bottom:6px; letter-spacing:-.2px}
+    .cta p{font-weight:650; opacity:.92; margin-bottom:12px}
+    .btns{display:flex; flex-direction:column; gap:10px}
+    a.btn{
+      display:block; text-decoration:none; text-align:center;
+      padding:12px 14px; border-radius:12px; font-weight:850;
     }
+    a.btn.primary{background:rgba(2,16,29,.92); color:white}
+    a.btn.secondary{background:rgba(255,255,255,.22); color:var(--dark); font-weight:800}
 
-    /* ═══════════════════════════════════════════════
-     TIPOGRAFIA RESPONSIVA
-     ═══════════════════════════════════════════════ */
-    h1 {
-      text-align: center;
-      font-size: clamp(1.3rem, 4vw, 2rem);
-      margin-bottom: 4px;
-      letter-spacing: -0.02em;
+    footer{
+      padding:14px 18px 18px;
+      border-top:1px solid var(--border);
+      text-align:center;
+      color:var(--muted);
+      font-size:13px;
+      background:rgba(0,0,0,.15);
     }
+    footer a{color:var(--p); text-decoration:none}
+    footer a:hover{text-decoration:underline}
 
-    .subtitle {
-      text-align: center;
-      color: var(--muted);
-      margin-bottom: clamp(15px, 3vw, 30px);
-      font-size: clamp(0.7rem, 2vw, 0.9rem);
+    @media (min-width: 820px){
+      .wrap{max-width: 640px}
+      .prices{grid-template-columns:repeat(3,1fr)}
+      .btns{flex-direction:row; justify-content:center}
+      a.btn{min-width:190px}
     }
-
-    /* ═══════════════════════════════════════════════
-     CARDS RESUMO
-     ═══════════════════════════════════════════════ */
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(min(120px, 100%), 1fr));
-      gap: var(--gap);
-      margin-bottom: clamp(15px, 3vw, 30px);
-    }
-
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: var(--pad);
-      text-align: center;
-      min-width: 0;
-    }
-
-    .card .valor {
-      font-size: clamp(1.2rem, 3.5vw, 1.8rem);
-      font-weight: 700;
-      color: var(--accent);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .card .label {
-      font-size: clamp(0.65rem, 1.8vw, 0.8rem);
-      color: var(--muted);
-      margin-top: 4px;
-    }
-
-    /* ═══════════════════════════════════════════════
-     SEÇÕES / PAINÉIS
-     ═══════════════════════════════════════════════ */
-    .section {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: var(--pad);
-      margin-bottom: var(--gap);
-      overflow: hidden;
-    }
-
-    .section h2 {
-      font-size: clamp(0.85rem, 2.5vw, 1.15rem);
-      margin-bottom: clamp(8px, 2vw, 15px);
-      color: var(--accent);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    /* ═══════════════════════════════════════════════
-     GRÁFICOS — Altura responsiva
-     ═══════════════════════════════════════════════ */
-    .chart-container {
-      position: relative;
-      width: 100%;
-      height: clamp(220px, 35vh, 400px);
-    }
-
-    .chart-container canvas {
-      width: 100% !important;
-      height: 100% !important;
-    }
-
-    /* ═══════════════════════════════════════════════
-     GRID 2 COLUNAS (responsivo)
-     ═══════════════════════════════════════════════ */
-    .grid-2 {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
-      gap: var(--gap);
-    }
-
-    /* ═══════════════════════════════════════════════
-     TABELA RESPONSIVA
-     ═══════════════════════════════════════════════ */
-    .table-wrap {
-      overflow-x: auto;
-      overflow-y: auto;
-      max-height: clamp(300px, 50vh, 600px);
-      -webkit-overflow-scrolling: touch;
-      border-radius: var(--radius);
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: clamp(0.68rem, 1.8vw, 0.82rem);
-      min-width: 800px;
-      /* garante scroll horizontal no mobile */
-    }
-
-    th,
-    td {
-      padding: clamp(5px, 1.2vw, 8px) clamp(6px, 1.5vw, 10px);
-      text-align: left;
-      border-bottom: 1px solid var(--border);
-      white-space: nowrap;
-    }
-
-    th {
-      color: var(--accent);
-      font-weight: 600;
-      position: sticky;
-      top: 0;
-      z-index: 2;
-      background: var(--card);
-    }
-
-    tr:hover {
-      background: rgba(56, 189, 248, 0.05);
-    }
-
-    /* ═══════════════════════════════════════════════
-     FILTROS
-     ═══════════════════════════════════════════════ */
-    .filter-bar {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-      margin-bottom: clamp(8px, 2vw, 12px);
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      padding-bottom: 4px;
-    }
-
-    .filter-btn {
-      padding: clamp(5px, 1.2vw, 6px) clamp(10px, 2.5vw, 14px);
-      border-radius: 20px;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--text);
-      cursor: pointer;
-      font-size: clamp(0.7rem, 1.8vw, 0.82rem);
-      transition: all 0.2s;
-      white-space: nowrap;
-      flex-shrink: 0;
-      /* Touch target mínimo 44px (acessibilidade) */
-      min-height: 36px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .filter-btn.active {
-      background: var(--accent);
-      color: var(--bg);
-      border-color: var(--accent);
-      font-weight: 600;
-    }
-
-    .filter-btn:hover {
-      border-color: var(--accent);
-    }
-
-    @media (hover: none) {
-      .filter-btn:hover {
-        border-color: var(--border);
-      }
-
-      .filter-btn.active:hover {
-        border-color: var(--accent);
-      }
-    }
-
-    /* ═══════════════════════════════════════════════
-     BADGE MODALIDADE
-     ═══════════════════════════════════════════════ */
-    .mod-badge {
-      display: inline-block;
-      padding: 2px clamp(5px, 1.5vw, 8px);
-      border-radius: 10px;
-      font-size: clamp(0.65rem, 1.6vw, 0.78rem);
-      font-weight: 600;
-      white-space: nowrap;
-    }
-
-    /* ═══════════════════════════════════════════════
-     FOOTER
-     ═══════════════════════════════════════════════ */
-    .footer {
-      text-align: center;
-      color: var(--muted);
-      margin-top: clamp(15px, 3vw, 30px);
-      padding-bottom: clamp(10px, 3vw, 20px);
-      font-size: clamp(0.65rem, 1.6vw, 0.8rem);
-    }
-
-    /* ═══════════════════════════════════════════
-   BANNER TOPO (substitui div inline)
-   ═══════════════════════════════════════════ */
-    .banner-cta {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      background: linear-gradient(135deg, #38bdf8, #0ea5e9);
-      color: #0f172a;
-      padding: 10px 16px;
-      font-size: clamp(0.78rem, 2vw, 0.9rem);
-      font-weight: 600;
-      text-align: center;
-    }
-
-    .banner-link {
-      background: rgba(15, 23, 42, 0.15);
-      color: #0f172a;
-      text-decoration: none;
-      padding: 5px 14px;
-      border-radius: 20px;
-      font-weight: 800;
-      white-space: nowrap;
-      border: 1px solid rgba(15, 23, 42, 0.25);
-      transition: background 0.2s;
-    }
-
-    .banner-link:hover {
-      background: rgba(15, 23, 42, 0.28);
-    }
-
-    /* ═══════════════════════════════════════════
-   CTA INLINE (meio da página)
-   ═══════════════════════════════════════════ */
-    .cta-inline {
-      background: linear-gradient(135deg, rgba(56, 189, 248, .12), rgba(14, 165, 233, .06));
-      border: 1px solid rgba(56, 189, 248, 0.4);
-      border-radius: var(--radius);
-      padding: clamp(16px, 4vw, 28px);
-      margin-bottom: var(--gap);
-      text-align: center;
-    }
-
-    .cta-inline .cta-eyebrow {
-      font-size: clamp(0.7rem, 1.8vw, 0.82rem);
-      color: #38bdf8;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 6px;
-    }
-
-    .cta-inline h3 {
-      font-size: clamp(1rem, 3vw, 1.4rem);
-      font-weight: 800;
-      margin-bottom: 8px;
-      letter-spacing: -0.02em;
-    }
-
-    .cta-inline p {
-      color: var(--muted);
-      font-size: clamp(0.78rem, 2vw, 0.9rem);
-      margin-bottom: 18px;
-      max-width: 480px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .cta-buttons {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-
-    .cta-btn-primary {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: linear-gradient(135deg, #38bdf8, #0ea5e9);
-      color: #0f172a;
-      text-decoration: none;
-      padding: clamp(10px, 2.5vw, 13px) clamp(18px, 4vw, 28px);
-      border-radius: 30px;
-      font-weight: 800;
-      font-size: clamp(0.82rem, 2vw, 0.95rem);
-      box-shadow: 0 8px 24px rgba(56, 189, 248, .3);
-      transition: transform 0.2s, box-shadow 0.2s;
-      white-space: nowrap;
-    }
-
-    .cta-btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 32px rgba(56, 189, 248, .45);
-    }
-
-    .cta-btn-secondary {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: transparent;
-      color: var(--text);
-      text-decoration: none;
-      padding: clamp(10px, 2.5vw, 13px) clamp(16px, 3.5vw, 22px);
-      border-radius: 30px;
-      font-weight: 600;
-      font-size: clamp(0.78rem, 2vw, 0.88rem);
-      border: 1px solid var(--border);
-      transition: border-color 0.2s;
-      white-space: nowrap;
-      cursor: pointer;
-      font-family: inherit;
-    }
-
-    .cta-btn-secondary:hover {
-      border-color: #38bdf8;
-    }
-
-    /* ═══════════════════════════════════════════
-   STICKY BAR (fixa na base da tela)
-   ═══════════════════════════════════════════ */
-    .sticky-cta {
-      position: fixed;
-      bottom: clamp(10px, 3vw, 18px);
-      left: clamp(10px, 3vw, 18px);
-      right: clamp(10px, 3vw, 18px);
-      z-index: 9999;
-      background: linear-gradient(135deg, #0f172a, #1e293b);
-      border: 1px solid rgba(56, 189, 248, 0.35);
-      border-radius: 16px;
-      padding: 12px 14px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      box-shadow: 0 16px 48px rgba(0, 0, 0, .5), 0 0 0 1px rgba(56, 189, 248, .1);
-    }
-
-    .sticky-cta .sticky-text {
-      flex: 1;
-      font-size: clamp(0.72rem, 1.9vw, 0.85rem);
-      color: var(--muted);
-      min-width: 0;
-    }
-
-    .sticky-cta .sticky-text strong {
-      color: var(--text);
-    }
-
-    .sticky-cta .sticky-wa {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: linear-gradient(135deg, #38bdf8, #0ea5e9);
-      color: #0f172a;
-      text-decoration: none;
-      padding: 9px 16px;
-      border-radius: 10px;
-      font-weight: 800;
-      font-size: clamp(0.75rem, 1.9vw, 0.85rem);
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-
-    .sticky-cta .sticky-close {
-      width: 28px;
-      height: 28px;
-      border: none;
-      border-radius: 8px;
-      background: rgba(255, 255, 255, .07);
-      color: var(--muted);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      flex-shrink: 0;
-      transition: background 0.2s;
-    }
-
-    .sticky-cta .sticky-close:hover {
-      background: rgba(255, 255, 255, .14);
-    }
-
-    /* Espaço para o sticky não cobrir o footer */
-    body.has-sticky {
-      padding-bottom: 80px;
-    }
-
-    @media (min-width: 820px) {
-      .sticky-cta {
-        left: auto;
-        right: clamp(16px, 3vw, 32px);
-        max-width: 480px;
-      }
-    }
-
-    @media print {
-
-      .banner-cta,
-      .cta-inline,
-      .sticky-cta {
-        display: none;
-      }
-    }
-
-
-    /* ═══════════════════════════════════════════════
-     BREAKPOINTS ESPECÍFICOS
-     ═══════════════════════════════════════════════ */
-
-    /* Celular pequeno (< 380px) */
-    @media (max-width: 380px) {
-      body {
-        padding: 8px;
-      }
-
-      .cards {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .chart-container {
-        height: 200px;
-      }
-    }
-
-    /* Celular padrão (381–600px) */
-    @media (min-width: 381px) and (max-width: 600px) {
-      .cards {
-        grid-template-columns: repeat(3, 1fr);
-      }
-
-      .chart-container {
-        height: 240px;
-      }
-    }
-
-    /* Tablet (601–1024px) */
-    @media (min-width: 601px) and (max-width: 1024px) {
-      .cards {
-        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-      }
-
-      .chart-container {
-        height: 300px;
-      }
-    }
-
-    /* Desktop (> 1024px) */
-    @media (min-width: 1025px) {
-      body {
-        max-width: 1400px;
-        margin: 0 auto;
-      }
-
-      .cards {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      }
-
-      .chart-container {
-        height: 380px;
-      }
-    }
-
-    /* Ultrawide (> 1800px) */
-    @media (min-width: 1800px) {
-      body {
-        max-width: 1600px;
-      }
-
-      .chart-container {
-        height: 420px;
-      }
-    }
-
-    /* Orientação paisagem no celular */
-    @media (max-height: 500px) and (orientation: landscape) {
-      .chart-container {
-        height: 50vh;
-      }
-
-      .cards {
-        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-      }
-    }
-
-    /* Print */
-    @media print {
-
-      /* ── Força cores ── */
-      * {
-        -webkit-print-color-adjust: exact !important;
-        print-color-adjust: exact !important;
-        color-adjust: exact !important;
-      }
-
-      /* ── Página A4 retrato (mobile feel) ── */
-      @page {
-        size: A4 portrait;
-        margin: 8mm 8mm;
-      }
-
-      /* ── Esconde o que não serve no PDF ── */
-      .filter-bar,
-      #filters,
-      .sticky-cta,
-      .cta-inline,
-      .banner-cta,
-      .cta-btn-secondary,
-      .cta-buttons {
-        display: none !important;
-      }
-
-      /* ── Reset body para mobile ── */
-      body {
-        background: #0f172a !important;
-        color: #f1f5f9 !important;
-        padding: 4mm !important;
-        font-size: 11px !important;
-        max-width: 100% !important;
-        width: 100% !important;
-        /* Simula viewport mobile */
-        -webkit-text-size-adjust: 100% !important;
-      }
-
-      /* ── Tipografia ── */
-      h1 {
-        font-size: 16px !important;
-        margin-bottom: 2px !important;
-        color: #f1f5f9 !important;
-      }
-
-      .subtitle {
-        font-size: 10px !important;
-        color: #94a3b8 !important;
-        margin-bottom: 6mm !important;
-      }
-
-      /* ── Cards: 2 colunas (igual mobile < 380px) ── */
-      .cards {
-        display: grid !important;
-        grid-template-columns: repeat(2, 1fr) !important;
-        gap: 3mm !important;
-        margin-bottom: 5mm !important;
-      }
-
-      .card {
-        background: #1e293b !important;
-        border: 1px solid #334155 !important;
-        border-radius: 6px !important;
-        padding: 6px 8px !important;
-        break-inside: avoid !important;
-      }
-
-      .card .valor {
-        font-size: 15px !important;
-        font-weight: 700 !important;
-        color: #38bdf8 !important;
-      }
-
-      .card .label {
-        font-size: 9px !important;
-        color: #94a3b8 !important;
-      }
-
-      /* ── Seções: 1 coluna, empilhadas ── */
-      .section {
-        background: #1e293b !important;
-        border: 1px solid #334155 !important;
-        border-radius: 8px !important;
-        padding: 8px !important;
-        margin-bottom: 4mm !important;
-        break-inside: avoid !important;
-        page-break-inside: avoid !important;
-        width: 100% !important;
-      }
-
-      .section h2 {
-        font-size: 11px !important;
-        color: #38bdf8 !important;
-        margin-bottom: 4px !important;
-        white-space: normal !important;
-      }
-
-      /* ── FORÇA 1 coluna (desfaz grid-2) ── */
-      .grid-2 {
-        display: block !important;
-      }
-
-      .grid-2 .section {
-        width: 100% !important;
-        margin-bottom: 4mm !important;
-      }
-
-      /* ── Gráficos: altura mobile ── */
-      .chart-container {
-        height: 180px !important;
-        width: 100% !important;
-        position: relative !important;
-      }
-
-      .chart-container canvas {
-        width: 100% !important;
-        height: 100% !important;
-      }
-
-      /* ── Tabela: compacta como mobile ── */
-      .table-wrap {
-        overflow: visible !important;
-        max-height: none !important;
-        width: 100% !important;
-      }
-
-      table {
-        min-width: 0 !important;
-        width: 100% !important;
-        font-size: 7.5px !important;
-        table-layout: fixed !important;
-      }
-
-      th,
-      td {
-        padding: 3px 4px !important;
-        white-space: normal !important;
-        word-break: break-word !important;
-        border-bottom: 1px solid #334155 !important;
-        color: #f1f5f9 !important;
-      }
-
-      th {
-        background: #1e293b !important;
-        color: #38bdf8 !important;
-        font-size: 7px !important;
-        position: static !important;
-      }
-
-      tr:nth-child(even) {
-        background: rgba(56, 189, 248, 0.06) !important;
-      }
-
-      /* ── Larguras das colunas da tabela ── */
-      table th:nth-child(1),
-      table td:nth-child(1) {
-        width: 9%
-      }
-
-      /* Data */
-      table th:nth-child(2),
-      table td:nth-child(2) {
-        width: 6%
-      }
-
-      /* Hora */
-      table th:nth-child(3),
-      table td:nth-child(3) {
-        width: 5%
-      }
-
-      /* Dia */
-      table th:nth-child(4),
-      table td:nth-child(4) {
-        width: 9%
-      }
-
-      /* Modalidade */
-      table th:nth-child(5),
-      table td:nth-child(5) {
-        width: 7%
-      }
-
-      /* Duração */
-      table th:nth-child(6),
-      table td:nth-child(6) {
-        width: 8%
-      }
-
-      /* Distância */
-      table th:nth-child(7),
-      table td:nth-child(7) {
-        width: 6%
-      }
-
-      /* FC Méd */
-      table th:nth-child(8),
-      table td:nth-child(8) {
-        width: 6%
-      }
-
-      /* FC Máx */
-      table th:nth-child(9),
-      table td:nth-child(9) {
-        width: 12%
-      }
-
-      /* Zona */
-      table th:nth-child(10),
-      table td:nth-child(10) {
-        width: 5%
-      }
-
-      /* Cal */
-      table th:nth-child(11),
-      table td:nth-child(11) {
-        width: 9%
-      }
-
-      /* Pace */
-      table th:nth-child(12),
-      table td:nth-child(12) {
-        width: 7%
-      }
-
-      /* Semana */
-      table th:nth-child(13),
-      table td:nth-child(13) {
-        width: 11%
-      }
-
-      /* Notes */
-
-      /* ── Badges de modalidade ── */
-      .mod-badge {
-        font-size: 7px !important;
-        padding: 1px 4px !important;
-        border-radius: 4px !important;
-      }
-
-      /* ── Footer ── */
-      .footer {
-        color: #94a3b8 !important;
-        font-size: 9px !important;
-        margin-top: 4mm !important;
-        border-top: 1px solid #334155 !important;
-        padding-top: 3mm !important;
-      }
-    }
-
-
-
-    /* Scrollbar estilizada */
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: var(--bg);
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: var(--border);
-      border-radius: 3px;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-      background: var(--muted);
-    }
-
-    /* ═══════════════════════════════════════════
-   SHARE BAR
-   ═══════════════════════════════════════════ */
-/* ═══════════════════════════════════════════
-   SHARE BAR — Alinhamento corrigido
-   ═══════════════════════════════════════════ */
-.share-bar {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: var(--pad);
-  margin-bottom: var(--gap);
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  justify-content: space-between;
-  flex-wrap: nowrap; /* Desktop: tudo numa linha */
-}
-
-.share-label {
-  font-size: clamp(0.78rem, 2vw, 0.9rem);
-  font-weight: 600;
-  color: var(--muted);
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-.share-buttons {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  flex-wrap: nowrap; /* Desktop: botões lado a lado */
-}
-
-.share-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 8px 16px;
-  border-radius: 20px;
-  border: 1.5px solid var(--border);
-  background: transparent;
-  color: var(--text);
-  font-family: inherit;
-  font-size: clamp(0.72rem, 1.8vw, 0.82rem);
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  white-space: nowrap;
-  min-height: 38px;
-  flex-shrink: 0;
-}
-
-.share-btn:hover {
-  transform: translateY(-1px);
-}
-
-/* Cores individuais */
-.share-img {
-  border-color: #a855f7;
-  color: #a855f7;
-}
-.share-img:hover {
-  background: rgba(168, 85, 247, 0.1);
-  box-shadow: 0 4px 14px rgba(168,85,247,.25);
-}
-
-.share-native {
-  border-color: #22c55e;
-  color: #22c55e;
-}
-.share-native:hover {
-  background: rgba(34, 197, 94, 0.1);
-  box-shadow: 0 4px 14px rgba(34,197,94,.25);
-}
-
-.share-link {
-  border-color: #38bdf8;
-  color: #38bdf8;
-}
-.share-link:hover {
-  background: rgba(56, 189, 248, 0.1);
-  box-shadow: 0 4px 14px rgba(56,189,248,.25);
-}
-
-/* ── Estados ── */
-.share-btn.loading {
-  opacity: 0.6;
-  cursor: wait;
-  transform: none !important;
-}
-.share-btn.success {
-  border-color: #22c55e !important;
-  color: #22c55e !important;
-}
-
-/* ═══════════════════════════════════════════
-   MOBILE — Empilha com simetria
-   ═══════════════════════════════════════════ */
-@media (max-width: 768px) {
-  .share-bar {
-    flex-direction: column;
-    align-items: stretch;      /* Estica tudo na largura total */
-    gap: 12px;
-    text-align: center;
-  }
-
-  .share-label {
-    text-align: center;
-    font-size: 0.82rem;
-  }
-
-  .share-buttons {
-    display: grid;
-    grid-template-columns: 1fr 1fr; /* 2 colunas simétricas */
-    gap: 8px;
-    width: 100%;
-  }
-
-  /* Botão "Compartilhar" ocupa linha inteira se for o 3º */
-  .share-native {
-    display: flex !important; /* Mostra no mobile */
-  }
-
-  /* Se tiver 3 botões: 2 em cima, 1 centralizado embaixo */
-  .share-buttons .share-link {
-    grid-column: 1 / -1;       /* Ocupa as 2 colunas */
-    max-width: 60%;
-    margin: 0 auto;
-    width: 100%;
-  }
-
-  .share-btn {
-    width: 100%;
-    min-height: 42px;          /* Touch target confortável */
-    font-size: 0.8rem;
-    padding: 10px 12px;
-    justify-content: center;
-  }
-}
-
-/* Esconde "Compartilhar" no desktop */
-@media (min-width: 769px) {
-  .share-native { display: none !important; }
-}
-
   </style>
 </head>
 
 <body>
-  <div class="banner-cta">
-    <span>👋 <strong>Treinador</strong> — este relatório pode ser gerado automaticamente para cada aluno seu.</span>
-    <a href="https://wa.me/5511986599970?text=Oi%20Douglas%2C%20vi%20o%20Treinô%20e%20quero%20entender%20como%20funciona%20para%20meus%20alunos."
-      class="banner-link">
-      Entender em 10 min →
-    </a>
-  </div>
+  <div class="wrap">
+    <div class="sheet">
 
+      <header>
+        <div class="brand">
+          <div class="logo">🏃</div>
+          <div class="name">treinô</div>
+        </div>
+        <div class="tag">“Cada treino conta. O Treinô mostra.”</div>
+        <div class="hero">
+          Relatórios automáticos (a partir do Strava) para <strong>organizar sua entrega</strong> e
+          <strong>valorizar seu serviço</strong> — sem promessas exageradas.
+        </div>
+      </header>
 
+      <main>
+        <section>
+          <h2>🎯 Pra quem é</h2>
+          <p>Para treinadores que acompanham alunos por apps como o <strong>Strava</strong> e querem apresentar a evolução com mais clareza e consistência.</p>
+        </section>
 
-  <h1>🏊🚴🏃 Triathlon Tracker</h1>
-  <p class="subtitle">Douglas — Gerado em <span id="gerado"></span></p>
+        <section>
+          <h2>🧩 O problema (sem drama)</h2>
+          <p class="muted">Os dados já existem. O trabalho é transformar isso em algo que o aluno entende e que não vire retrabalho.</p>
+          <ul>
+            <li>Rápido de revisar</li>
+            <li>Fácil de explicar</li>
+            <li>Profissional na percepção do aluno</li>
+            <li>Consistente toda semana</li>
+          </ul>
+        </section>
 
-  <div class="cards" id="cards"></div>
+        <section class="demo">
+          <div class="phone">
+            <div class="top">
+              <b>📊 Relatório semanal (exemplo)</b>
+              <span class="pill">pronto</span>
+            </div>
 
-  <div class="section">
-    <h2>📊 Volume Semanal (minutos)</h2>
-    <div class="chart-container"><canvas id="chartVolume"></canvas></div>
-  </div>
+            <div class="kpis">
+              <div class="kpi"><div class="v">42km</div><div class="l">Volume</div></div>
+              <div class="kpi"><div class="v">5:12</div><div class="l">Pace méd.</div></div>
+              <div class="kpi"><div class="v">6</div><div class="l">Treinos</div></div>
+            </div>
 
-  <div class="grid-2">
-    <div class="section">
-      <h2>📏 Distância — Corrida & Bike (km)</h2>
-      <div class="chart-container"><canvas id="chartDistKm"></canvas></div>
-    </div>
-    <div class="section">
-      <h2>🏊 Distância — Natação (m)</h2>
-      <div class="chart-container"><canvas id="chartDistM"></canvas></div>
-    </div>
-  </div>
+            <div class="bars" aria-label="Evolução semanal">
+              <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+              <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+            </div>
 
-  <div class="grid-2">
-    <div class="section">
-      <h2>⏱️ Pace — Corrida & Natação</h2>
-      <div class="chart-container"><canvas id="chartPace"></canvas></div>
-    </div>
-    <div class="section">
-      <h2>🚴 Velocidade Bike (km/h)</h2>
-      <div class="chart-container"><canvas id="chartBike"></canvas></div>
-    </div>
-  </div>
+            <div class="cap">Dashboard online + PDF pronto para enviar</div>
+          </div>
+        </section>
 
-  <div class="section">
-    <h2>❤️ FC Média por Semana</h2>
-    <div class="chart-container"><canvas id="chartFC"></canvas></div>
-  </div>
+        <section>
+          <h2>✨ Como funciona</h2>
+          <div class="steps">
+            <div class="step"><div class="n">1</div><div><strong>Aluno conecta o Strava</strong> (uma vez)</div></div>
+            <div class="step"><div class="n">2</div><div>Treinos são <strong>processados automaticamente</strong></div></div>
+            <div class="step"><div class="n">3</div><div>Você recebe <strong>dashboard + PDF</strong> e decide o que repassar</div></div>
+          </div>
+        </section>
 
-  <div class="section">
-    <h2>🎯 Zonas de FC por Semana (%)</h2>
-    <div class="chart-container"><canvas id="chartZonas"></canvas></div>
-  </div>
+        <section>
+          <h2>🚀 Onde isso ajuda</h2>
+          <ul>
+            <li><strong>Produtividade:</strong> menos consolidação manual, mais tempo no aluno</li>
+            <li><strong>Padronização:</strong> entrega clara e consistente</li>
+            <li><strong>Valor percebido:</strong> o aluno entende evolução com facilidade</li>
+            <li><strong>Comunicação:</strong> feedback em cima de um documento organizado</li>
+          </ul>
+          <p class="muted">A intenção é apoiar seu trabalho — não substituir seu critério.</p>
+        </section>
 
-  <div class="section">
-    <h2>📅 Sessões por Semana</h2>
-    <div class="chart-container"><canvas id="chartSessoes"></canvas></div>
-  </div>
-  <div class="cta-inline">
-    <div class="cta-eyebrow">✦ Para treinadores</div>
-    <h3>Seu aluno merece ver a evolução assim</h3>
-    <p>
-      Este relatório é gerado automaticamente a partir do Strava —
-      sem planilha, sem print, sem retrabalho. Posso te mostrar em 10 minutos.
-    </p>
-    <div class="cta-buttons">
-      <a class="cta-btn-primary"
-        href="https://wa.me/5511986599970?text=Oi%20Douglas%2C%20vi%20o%20Treinô%20e%20quero%20ver%20como%20funciona%20para%20meus%20alunos."
-        target="_blank" rel="noopener">
-        📱 Conversar no WhatsApp
-      </a>
-      <!-- Bloco de compartilhamento — substitui botão de PDF -->
-      <div class="share-bar" id="shareBar">
-        <span class="share-label">Compartilhar relatório</span>
-        <div class="share-buttons">
+        <section>
+          <h2>🧪 Momento do projeto</h2>
+          <p>Estou em <strong>validação</strong>. Quero conversar com treinadores para entender o fluxo atual e o que seria realmente útil.</p>
+          <ul>
+            <li>O que você entrega hoje?</li>
+            <li>O que toma mais tempo?</li>
+            <li>O que faria diferença pro aluno?</li>
+          </ul>
+        </section>
 
-          <!-- Botão 1: Salvar como imagem -->
-          <button class="share-btn share-img" onclick="salvarImagem()" id="btnImg">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="3" y="3" width="18" height="18" rx="2" />
-              <circle cx="8.5" cy="8.5" r="1.5" />
-              <path d="m21 15-5-5L5 21" />
-            </svg>
-            Salvar imagem
-          </button>
+        <section>
+          <h2>💰 Valores (em estudo)</h2>
+          <p class="muted">Estimativas só para alinhar expectativa (posso ajustar conforme escopo real):</p>
+          <div class="prices">
+            <div class="plan">
+              <div class="t">🥉 Starter</div>
+              <div class="v">R$ 49</div>
+              <div class="s">até 5 alunos</div>
+            </div>
+            <div class="plan featured">
+              <div class="t">🥈 Pro</div>
+              <div class="v">R$ 129</div>
+              <div class="s">até 20 alunos</div>
+            </div>
+            <div class="plan">
+              <div class="t">🥇 Assessoria</div>
+              <div class="v">R$ 249</div>
+              <div class="s">até 50 alunos</div>
+            </div>
+          </div>
+        </section>
 
-          <!-- Botão 2: Compartilhar (nativo mobile) -->
-          <button class="share-btn share-native" onclick="compartilharNativo()" id="btnShare">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="18" cy="5" r="3" />
-              <circle cx="6" cy="12" r="3" />
-              <circle cx="18" cy="19" r="3" />
-              <path d="m8.59 13.51 6.83 3.98M15.41 6.51l-6.82 3.98" />
-            </svg>
-            Compartilhar
-          </button>
+        <section>
+          <h2>👋 Quem tá por trás</h2>
+          <p>Sou o <strong>Douglas</strong>, desenvolvedor nômade. Comecei a treinar recentemente e vi na prática como dá trabalho consolidar dados e medir evolução.</p>
+          <p class="muted"><strong>Não presumo sua rotina.</strong> Quero entender seu processo e construir algo útil — sem promessas exageradas.</p>
+        </section>
+      </main>
 
-          <!-- Botão 3: Copiar link -->
-          <button class="share-btn share-link" onclick="copiarLink()" id="btnLink">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
-              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
-            </svg>
-            <span id="linkBtnText">Copiar link</span>
-          </button>
-
+      <div class="cta">
+        <h3>📲 Se fizer sentido, 10 min?</h3>
+        <p>Sem pitch, sem pressão — só pra eu entender seu fluxo e te mostrar o que tenho.</p>
+        <div class="btns">
+          <a class="btn primary" href="https://wa.me/5511986599970?text=Oi%20Douglas%2C%20vi%20o%20Trein%C3%B4%20e%20quero%20entender%20melhor%20como%20funciona.">
+            WhatsApp
+          </a>
+          <a class="btn secondary" href=dash.html>
+            Ver demostração
+          </a>
         </div>
       </div>
 
+      <footer>
+        Douglas No Mundo<br/>
+        <!-- Instagram: <a href="https://instagram.com/treino.app">@treino.app</a> -->
+      </footer>
+
     </div>
   </div>
-
-  <div class="section">
-    <h2>📋 Todos os Treinos</h2>
-    <div class="filter-bar" id="filters"></div>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Data</th>
-            <th>Hora</th>
-            <th>Dia</th>
-            <th>Modalidade</th>
-            <th>Duração</th>
-            <th>Distância</th>
-            <th>FC Méd</th>
-            <th>FC Máx</th>
-            <th>Zona FC</th>
-            <th>Cal</th>
-            <th>Pace/Vel</th>
-            <th>Semana</th>
-            <th>Notes</th>
-          </tr>
-        </thead>
-        <tbody id="tabelaBody"></tbody>
-      </table>
-    </div>
-  </div>
-
-  <p class="footer">
-    <strong>Treinô</strong> v1.1 — Gerado por Douglas No Mundo
-  </p>
-
-  <script>
-    // ══════════════════════════════════════════════════════════════
-    // DADOS
-    // ══════════════════════════════════════════════════════════════
-    const D = {
-      "atleta": "Douglas",
-      "gerado": "26/04/2026 19:33",
-      "semanas": [
-        "Pré-S2",
-        "Pré-S1",
-        "S1",
-        "S2",
-        "S3",
-        "S4"
-      ],
-      "modalidades": [
-        "Bike",
-        "Core",
-        "Corrida",
-        "Natação",
-        "Outros"
-      ],
-      "cores": {
-        "Natação": "#0ea5e9",
-        "Corrida": "#ef4444",
-        "Bike": "#22c55e",
-        "Core": "#f59e0b",
-        "Outros": "#8b5cf6"
-      },
-      "resumo": {
-        "sessoes": 36,
-        "minutos": 1674,
-        "horas": 27.9,
-        "km": 350.4,
-        "calorias": 18881,
-        "semanas": 6,
-        "sessoes_mod": {
-          "Bike": 15,
-          "Corrida": 9,
-          "Natação": 8,
-          "Outros": 3,
-          "Core": 1
-        },
-        "min_mod": {
-          "Bike": 865.0,
-          "Corrida": 259.6,
-          "Natação": 338.1,
-          "Outros": 200.9,
-          "Core": 10.8
-        }
-      },
-      "volume": {
-        "Pré-S2": {
-          "Bike": 91.3,
-          "Corrida": 11.6
-        },
-        "Pré-S1": {
-          "Bike": 202.0,
-          "Corrida": 15.9
-        },
-        "S1": {
-          "Corrida": 64.1,
-          "Natação": 121.5,
-          "Bike": 61.6,
-          "Outros": 30.0
-        },
-        "S2": {
-          "Bike": 276.9,
-          "Natação": 86.5,
-          "Corrida": 87.6
-        },
-        "S3": {
-          "Bike": 158.5,
-          "Core": 10.8,
-          "Natação": 86.4,
-          "Corrida": 40.2
-        },
-        "S4": {
-          "Outros": 170.9,
-          "Corrida": 40.2,
-          "Natação": 43.7,
-          "Bike": 74.7
-        }
-      },
-      "distKm": {
-        "Pré-S2": {
-          "Bike": 30.310000000000002,
-          "Corrida": 1.12
-        },
-        "Pré-S1": {
-          "Bike": 65.66,
-          "Corrida": 2.17
-        },
-        "S1": {
-          "Corrida": 7.49,
-          "Natação": 2.62,
-          "Bike": 17.95,
-          "Outros": 0.0
-        },
-        "S2": {
-          "Bike": 88.98,
-          "Natação": 1.5499999999999998,
-          "Corrida": 8.63
-        },
-        "S3": {
-          "Bike": 48.910000000000004,
-          "Core": 0.0,
-          "Natação": 1.87,
-          "Corrida": 4.61
-        },
-        "S4": {
-          "Outros": 39.260000000000005,
-          "Corrida": 4.65,
-          "Natação": 0.72,
-          "Bike": 23.91
-        }
-      },
-      "distM": {
-        "Pré-S2": {
-          "Bike": 30309.0,
-          "Corrida": 1122.0
-        },
-        "Pré-S1": {
-          "Bike": 65654.0,
-          "Corrida": 2166.0
-        },
-        "S1": {
-          "Corrida": 7485.0,
-          "Natação": 2620.0,
-          "Bike": 17945.0,
-          "Outros": 0.0
-        },
-        "S2": {
-          "Bike": 88977.0,
-          "Natação": 1552.0,
-          "Corrida": 8635.0
-        },
-        "S3": {
-          "Bike": 48908.0,
-          "Core": 0.0,
-          "Natação": 1872.0,
-          "Corrida": 4611.0
-        },
-        "S4": {
-          "Outros": 39263.0,
-          "Corrida": 4652.0,
-          "Natação": 720.0,
-          "Bike": 23903.0
-        }
-      },
-      "sessoes": {
-        "Pré-S2": {
-          "Bike": 2,
-          "Corrida": 1
-        },
-        "Pré-S1": {
-          "Bike": 3,
-          "Corrida": 2
-        },
-        "S1": {
-          "Corrida": 2,
-          "Natação": 3,
-          "Bike": 1,
-          "Outros": 1
-        },
-        "S2": {
-          "Bike": 4,
-          "Natação": 2,
-          "Corrida": 2
-        },
-        "S3": {
-          "Bike": 3,
-          "Core": 1,
-          "Natação": 2,
-          "Corrida": 1
-        },
-        "S4": {
-          "Outros": 2,
-          "Corrida": 1,
-          "Natação": 1,
-          "Bike": 2
-        }
-      },
-      "fcMedia": {
-        "Pré-S2": {
-          "Bike": 147,
-          "Corrida": 157
-        },
-        "Pré-S1": {
-          "Bike": 148,
-          "Corrida": 160
-        },
-        "S1": {
-          "Corrida": 138,
-          "Natação": 148,
-          "Bike": 132,
-          "Outros": 73
-        },
-        "S2": {
-          "Bike": 138,
-          "Natação": 142,
-          "Corrida": 134
-        },
-        "S3": {
-          "Bike": 131,
-          "Core": 109,
-          "Natação": 146,
-          "Corrida": 137
-        },
-        "S4": {
-          "Outros": 152,
-          "Corrida": 134,
-          "Natação": 141,
-          "Bike": 140
-        }
-      },
-      "paceCorrida": {
-        "Pré-S2": 10.35,
-        "Pré-S1": 7.32,
-        "S1": 8.56,
-        "S2": 10.02,
-        "S3": 8.72,
-        "S4": 8.63
-      },
-      "paceNatacao": {
-        "S1": 4.88,
-        "S2": 5.59,
-        "S3": 4.61,
-        "S4": 6.07
-      },
-      "velBike": {
-        "Pré-S2": 19.6,
-        "Pré-S1": 19.7,
-        "S1": 17.5,
-        "S2": 18.6,
-        "S3": 18.5,
-        "S4": 19.2
-      },
-      "zonas": {
-        "Pré-S2": {
-          "Abaixo Z1": 18.1,
-          "Z1 - Aquecimento": 30.7,
-          "Z2 - Queima Gordura": 31.200000000000003,
-          "Z3 - Aeróbico": 76.6,
-          "Z4 - Anaeróbico": 136.1,
-          "Z5 - VO2 Máx": 7.3
-        },
-        "Pré-S1": {
-          "Abaixo Z1": 6.300000000000001,
-          "Z1 - Aquecimento": 25.599999999999994,
-          "Z2 - Queima Gordura": 98.1,
-          "Z3 - Aeróbico": 120.8,
-          "Z4 - Anaeróbico": 240.3,
-          "Z5 - VO2 Máx": 8.9
-        },
-        "S1": {
-          "Abaixo Z1": 186.70000000000002,
-          "Z1 - Aquecimento": 80.3,
-          "Z2 - Queima Gordura": 147.9,
-          "Z3 - Aeróbico": 156.4,
-          "Z4 - Anaeróbico": 113.0,
-          "Z5 - VO2 Máx": 15.6
-        },
-        "S2": {
-          "Abaixo Z1": 84.19999999999999,
-          "Z1 - Aquecimento": 178.60000000000002,
-          "Z2 - Queima Gordura": 284.5,
-          "Z3 - Aeróbico": 210.29999999999998,
-          "Z4 - Anaeróbico": 41.400000000000006,
-          "Z5 - VO2 Máx": 0.9
-        },
-        "S3": {
-          "Abaixo Z1": 161.1,
-          "Z1 - Aquecimento": 170.6,
-          "Z2 - Queima Gordura": 157.6,
-          "Z3 - Aeróbico": 181.0,
-          "Z4 - Anaeróbico": 29.4,
-          "Z5 - VO2 Máx": 0.0
-        },
-        "S4": {
-          "Abaixo Z1": 34.3,
-          "Z1 - Aquecimento": 74.80000000000001,
-          "Z2 - Queima Gordura": 134.89999999999998,
-          "Z3 - Aeróbico": 144.4,
-          "Z4 - Anaeróbico": 11.7,
-          "Z5 - VO2 Máx": 0.0
-        }
-      },
-      "tabela": [
-        {
-          "data": "23/03/2026",
-          "hora": "05:44",
-          "dia": "Seg",
-          "mod": "Bike",
-          "dur": 59.0,
-          "dist": 20.18,
-          "distM": 20183,
-          "fcm": 157,
-          "fcx": 174,
-          "zona": "Z4 - Anaeróbico",
-          "cal": 780,
-          "pace": "20.5 km/h",
-          "cad": "",
-          "brac": "",
-          "sem": "Pré-S2",
-          "notes": "Outdoor cycling"
-        },
-        {
-          "data": "23/03/2026",
-          "hora": "07:30",
-          "dia": "Seg",
-          "mod": "Corrida",
-          "dur": 11.6,
-          "dist": 1.12,
-          "distM": 1122,
-          "fcm": 157,
-          "fcx": 172,
-          "zona": "Z4 - Anaeróbico",
-          "cal": 152,
-          "pace": "10:21/km",
-          "cad": 262,
-          "brac": "",
-          "sem": "Pré-S2",
-          "notes": "Outdoor running"
-        },
-        {
-          "data": "24/03/2026",
-          "hora": "07:03",
-          "dia": "Ter",
-          "mod": "Bike",
-          "dur": 32.3,
-          "dist": 10.13,
-          "distM": 10126,
-          "fcm": 137,
-          "fcx": 163,
-          "zona": "Z2 - Queima Gordura",
-          "cal": 351,
-          "pace": "18.8 km/h",
-          "cad": "",
-          "brac": "",
-          "sem": "Pré-S2",
-          "notes": "Outdoor cycling"
-        },
-        {
-          "data": "25/03/2026",
-          "hora": "05:49",
-          "dia": "Qua",
-          "mod": "Bike",
-          "dur": 61.6,
-          "dist": 21.34,
-          "distM": 21338,
-          "fcm": 152,
-          "fcx": 167,
-          "zona": "Z3 - Aeróbico",
-          "cal": 780,
-          "pace": "20.8 km/h",
-          "cad": "",
-          "brac": "",
-          "sem": "Pré-S1",
-          "notes": "Outdoor cycling"
-        },
-        {
-          "data": "25/03/2026",
-          "hora": "07:03",
-          "dia": "Qua",
-          "mod": "Corrida",
-          "dur": 8.3,
-          "dist": 1.09,
-          "distM": 1089,
-          "fcm": 160,
-          "fcx": 169,
-          "zona": "Z4 - Anaeróbico",
-          "cal": 112,
-          "pace": "7:36/km",
-          "cad": 318,
-          "brac": "",
-          "sem": "Pré-S1",
-          "notes": "Outdoor running"
-        },
-        {
-          "data": "26/03/2026",
-          "hora": "06:06",
-          "dia": "Qui",
-          "mod": "Bike",
-          "dur": 79.2,
-          "dist": 22.94,
-          "distM": 22939,
-          "fcm": 140,
-          "fcx": 161,
-          "zona": "Z2 - Queima Gordura",
-          "cal": 888,
-          "pace": "17.4 km/h",
-          "cad": "",
-          "brac": "",
-          "sem": "Pré-S1",
-          "notes": "Outdoor cycling"
-        },
-        {
-          "data": "30/03/2026",
-          "hora": "05:59",
-          "dia": "Seg",
-          "mod": "Bike",
-          "dur": 61.2,
-          "dist": 21.38,
-          "distM": 21377,
-          "fcm": 151,
-          "fcx": 171,
-          "zona": "Z3 - Aeróbico",
-          "cal": 768,
-          "pace": "21.0 km/h",
-          "cad": "",
-          "brac": "",
-          "sem": "Pré-S1",
-          "notes": "Outdoor cycling"
-        },
-        {
-          "data": "30/03/2026",
-          "hora": "07:22",
-          "dia": "Seg",
-          "mod": "Corrida",
-          "dur": 7.6,
-          "dist": 1.08,
-          "distM": 1077,
-          "fcm": 160,
-          "fcx": 170,
-          "zona": "Z4 - Anaeróbico",
-          "cal": 100,
-          "pace": "7:02/km",
-          "cad": 318,
-          "brac": "",
-          "sem": "Pré-S1",
-          "notes": "Outdoor running"
-        },
-        {
-          "data": "31/03/2026",
-          "hora": "05:46",
-          "dia": "Ter",
-          "mod": "Corrida",
-          "dur": 31.0,
-          "dist": 3.82,
-          "distM": 3818,
-          "fcm": 141,
-          "fcx": 174,
-          "zona": "Z2 - Queima Gordura",
-          "cal": 348,
-          "pace": "8:06/km",
-          "cad": 270,
-          "brac": "",
-          "sem": "S1",
-          "notes": "Outdoor running·Iniciando corrida"
-        },
-        {
-          "data": "31/03/2026",
-          "hora": "19:19",
-          "dia": "Ter",
-          "mod": "Natação",
-          "dur": 41.5,
-          "dist": 0.78,
-          "distM": 784,
-          "fcm": 137,
-          "fcx": 166,
-          "zona": "Z2 - Queima Gordura",
-          "cal": 451,
-          "pace": "5:17/100m",
-          "cad": "",
-          "brac": 422,
-          "sem": "S1",
-          "notes": "Pool swimming"
-        },
-        {
-          "data": "01/04/2026",
-          "hora": "06:16",
-          "dia": "Qua",
-          "mod": "Bike",
-          "dur": 61.6,
-          "dist": 17.95,
-          "distM": 17945,
-          "fcm": 132,
-          "fcx": 147,
-          "zona": "Z1 - Aquecimento",
-          "cal": 631,
-          "pace": "17.5 km/h",
-          "cad": "",
-          "brac": "",
-          "sem": "S1",
-          "notes": "Outdoor cycling·FC 120-140"
-        },
-        {
-          "data": "02/04/2026",
-          "hora": "06:00",
-          "dia": "Qui",
-          "mod": "Outros",
-          "dur": 30.0,
-          "dist": 0.0,
-          "distM": 0,
-          "fcm": 73,
-          "fcx": 95,
-          "zona": "Abaixo Z1",
-          "cal": 15,
-          "pace": "",
-          "cad": "",
-          "brac": "",
-          "sem": "S1",
-          "notes": "Fortalecimento"
-        },
-        {
-          "data": "02/04/2026",
-          "hora": "19:20",
-          "dia": "Qui",
-          "mod": "Natação",
-          "dur": 46.4,
-          "dist": 0.74,
-          "distM": 736,
-          "fcm": 154,
-          "fcx": 173,
-          "zona": "Z3 - Aeróbico",
-          "cal": 600,
-          "pace": "6:18/100m",
-          "cad": "",
-          "brac": 505,
-          "sem": "S1",
-          "notes": "Pool swimming"
-        },
-        {
-          "data": "03/04/2026",
-          "hora": "06:09",
-          "dia": "Sex",
-          "mod": "Corrida",
-          "dur": 33.1,
-          "dist": 3.67,
-          "distM": 3667,
-          "fcm": 135,
-          "fcx": 160,
-          "zona": "Z2 - Queima Gordura",
-          "cal": 350,
-          "pace": "9:01/km",
-          "cad": 268,
-          "brac": "",
-          "sem": "S1",
-          "notes": "Outdoor running·Corrida 02"
-        },
-        {
-          "data": "04/04/2026",
-          "hora": "09:15",
-          "dia": "Sáb",
-          "mod": "Natação",
-          "dur": 33.6,
-          "dist": 1.1,
-          "distM": 1100,
-          "fcm": 152,
-          "fcx": 162,
-          "zona": "Z3 - Aeróbico",
-          "cal": 424,
-          "pace": "3:03/100m",
-          "cad": "",
-          "brac": 693,
-          "sem": "S1",
-          "notes": "Pool swimming"
-        },
-        {
-          "data": "07/04/2026",
-          "hora": "07:18",
-          "dia": "Ter",
-          "mod": "Bike",
-          "dur": 48.9,
-          "dist": 13.62,
-          "distM": 13622,
-          "fcm": 132,
-          "fcx": 157,
-          "zona": "Z1 - Aquecimento",
-          "cal": 502,
-          "pace": "16.7 km/h",
-          "cad": "",
-          "brac": "",
-          "sem": "S2",
-          "notes": "Outdoor cycling"
-        },
-        {
-          "data": "07/04/2026",
-          "hora": "19:18",
-          "dia": "Ter",
-          "mod": "Natação",
-          "dur": 42.8,
-          "dist": 0.72,
-          "distM": 720,
-          "fcm": 141,
-          "fcx": 162,
-          "zona": "Z2 - Queima Gordura",
-          "cal": 482,
-          "pace": "5:56/100m",
-          "cad": "",
-          "brac": 470,
-          "sem": "S2",
-          "notes": "Pool swimming"
-        },
-        {
-          "data": "08/04/2026",
-          "hora": "07:34",
-          "dia": "Qua",
-          "mod": "Corrida",
-          "dur": 53.0,
-          "dist": 4.74,
-          "distM": 4743,
-          "fcm": 135,
-          "fcx": 169,
-          "zona": "Z2 - Queima Gordura",
-          "cal": 562,
-          "pace": "11:10/km",
-          "cad": 224,
-          "brac": "",
-          "sem": "S2",
-          "notes": "Outdoor running·Z2"
-        },
-        {
-          "data": "08/04/2026",
-          "hora": "17:01",
-          "dia": "Qua",
-          "mod": "Bike",
-          "dur": 48.2,
-          "dist": 12.97,
-          "distM": 12970,
-          "fcm": 133,
-          "fcx": 163,
-          "zona": "Z2 - Queima Gordura",
-          "cal": 502,
-          "pace": "16.2 km/h",
-          "cad": "",
-          "brac": "",
-          "sem": "S2",
-          "notes": "Outdoor cycling"
-        },
-        {
-          "data": "09/04/2026",
-          "hora": "06:40",
-          "dia": "Qui",
-          "mod": "Bike",
-          "dur": 84.6,
-          "dist": 30.75,
-          "distM": 30750,
-          "fcm": 146,
-          "fcx": 168,
-          "zona": "Z3 - Aeróbico",
-          "cal": 1009,
-          "pace": "21.8 km/h",
-          "cad": "",
-          "brac": "",
-          "sem": "S2",
-          "notes": "Outdoor cycling·Trontou"
-        },
-        {
-          "data": "09/04/2026",
-          "hora": "19:18",
-          "dia": "Qui",
-          "mod": "Natação",
-          "dur": 43.7,
-          "dist": 0.83,
-          "distM": 832,
-          "fcm": 142,
-          "fcx": 166,
-          "zona": "Z2 - Queima Gordura",
-          "cal": 500,
-          "pace": "5:15/100m",
-          "cad": "",
-          "brac": 478,
-          "sem": "S2",
-          "notes": "Pool swimming"
-        },
-        {
-          "data": "10/04/2026",
-          "hora": "07:03",
-          "dia": "Sex",
-          "mod": "Corrida",
-          "dur": 34.6,
-          "dist": 3.89,
-          "distM": 3892,
-          "fcm": 133,
-          "fcx": 171,
-          "zona": "Z2 - Queima Gordura",
-          "cal": 355,
-          "pace": "8:53/km",
-          "cad": 262,
-          "brac": "",
-          "sem": "S2",
-          "notes": "Outdoor running·RI-S01"
-        },
-        {
-          "data": "11/04/2026",
-          "hora": "06:16",
-          "dia": "Sáb",
-          "mod": "Bike",
-          "dur": 95.2,
-          "dist": 31.64,
-          "distM": 31635,
-          "fcm": 141,
-          "fcx": 166,
-          "zona": "Z2 - Queima Gordura",
-          "cal": 1076,
-          "pace": "19.9 km/h",
-          "cad": "",
-          "brac": "",
-          "sem": "S2",
-          "notes": "Outdoor cycling"
-        },
-        {
-          "data": "14/04/2026",
-          "hora": "05:19",
-          "dia": "Ter",
-          "mod": "Bike",
-          "dur": 75.0,
-          "dist": 23.46,
-          "distM": 23456,
-          "fcm": 127,
-          "fcx": 151,
-          "zona": "Z1 - Aquecimento",
-          "cal": 744,
-          "pace": "18.8 km/h",
-          "cad": "",
-          "brac": "",
-          "sem": "S3",
-          "notes": "Outdoor cycling·Z2 50min"
-        },
-        {
-          "data": "14/04/2026",
-          "hora": "07:00",
-          "dia": "Ter",
-          "mod": "Core",
-          "dur": 10.8,
-          "dist": 0.0,
-          "distM": 0,
-          "fcm": 109,
-          "fcx": 126,
-          "zona": "Abaixo Z1",
-          "cal": 83,
-          "pace": "",
-          "cad": "",
-          "brac": "",
-          "sem": "S3",
-          "notes": "Group calisthenics"
-        },
-        {
-          "data": "14/04/2026",
-          "hora": "19:16",
-          "dia": "Ter",
-          "mod": "Natação",
-          "dur": 43.4,
-          "dist": 0.94,
-          "distM": 944,
-          "fcm": 144,
-          "fcx": 166,
-          "zona": "Z2 - Queima Gordura",
-          "cal": 518,
-          "pace": "4:35/100m",
-          "cad": "",
-          "brac": 612,
-          "sem": "S3",
-          "notes": "Pool swimming"
-        },
-        {
-          "data": "15/04/2026",
-          "hora": "07:09",
-          "dia": "Qua",
-          "mod": "Corrida",
-          "dur": 40.2,
-          "dist": 4.61,
-          "distM": 4611,
-          "fcm": 137,
-          "fcx": 157,
-          "zona": "Z2 - Queima Gordura",
-          "cal": 443,
-          "pace": "8:43/km",
-          "cad": 284,
-          "brac": "",
-          "sem": "S3",
-          "notes": "Outdoor running·Z2 40min S3"
-        },
-        {
-          "data": "16/04/2026",
-          "hora": "08:07",
-          "dia": "Qui",
-          "mod": "Bike",
-          "dur": 42.3,
-          "dist": 12.77,
-          "distM": 12771,
-          "fcm": 126,
-          "fcx": 147,
-          "zona": "Z1 - Aquecimento",
-          "cal": 413,
-          "pace": "18.1 km/h",
-          "cad": "",
-          "brac": "",
-          "sem": "S3",
-          "notes": "Outdoor cycling"
-        },
-        {
-          "data": "16/04/2026",
-          "hora": "19:17",
-          "dia": "Qui",
-          "mod": "Natação",
-          "dur": 43.0,
-          "dist": 0.93,
-          "distM": 928,
-          "fcm": 147,
-          "fcx": 169,
-          "zona": "Z3 - Aeróbico",
-          "cal": 524,
-          "pace": "4:38/100m",
-          "cad": "",
-          "brac": 583,
-          "sem": "S3",
-          "notes": "Pool swimming"
-        },
-        {
-          "data": "18/04/2026",
-          "hora": "09:26",
-          "dia": "Sáb",
-          "mod": "Bike",
-          "dur": 41.2,
-          "dist": 12.68,
-          "distM": 12681,
-          "fcm": 140,
-          "fcx": 157,
-          "zona": "Z2 - Queima Gordura",
-          "cal": 471,
-          "pace": "18.5 km/h",
-          "cad": "",
-          "brac": "",
-          "sem": "S3",
-          "notes": "Outdoor cycling"
-        },
-        {
-          "data": "21/04/2026",
-          "hora": "08:41",
-          "dia": "Ter",
-          "mod": "Outros",
-          "dur": 69.9,
-          "dist": 13.91,
-          "distM": 13910,
-          "fcm": 156,
-          "fcx": "",
-          "zona": "Z3 - Aeróbico",
-          "cal": 924,
-          "pace": "",
-          "cad": "",
-          "brac": "",
-          "sem": "S4",
-          "notes": "Triathlon"
-        },
-        {
-          "data": "22/04/2026",
-          "hora": "07:04",
-          "dia": "Qua",
-          "mod": "Corrida",
-          "dur": 40.2,
-          "dist": 4.65,
-          "distM": 4652,
-          "fcm": 134,
-          "fcx": 159,
-          "zona": "Z2 - Queima Gordura",
-          "cal": 429,
-          "pace": "8:38/km",
-          "cad": 280,
-          "brac": "",
-          "sem": "S4",
-          "notes": "Outdoor running·S4 40m z2"
-        },
-        {
-          "data": "23/04/2026",
-          "hora": "19:16",
-          "dia": "Qui",
-          "mod": "Natação",
-          "dur": 43.7,
-          "dist": 0.72,
-          "distM": 720,
-          "fcm": 141,
-          "fcx": 162,
-          "zona": "Z2 - Queima Gordura",
-          "cal": 508,
-          "pace": "6:04/100m",
-          "cad": "",
-          "brac": 543,
-          "sem": "S4",
-          "notes": "Pool swimming"
-        },
-        {
-          "data": "25/04/2026",
-          "hora": "07:14",
-          "dia": "Sáb",
-          "mod": "Bike",
-          "dur": 36.1,
-          "dist": 11.95,
-          "distM": 11946,
-          "fcm": 141,
-          "fcx": 163,
-          "zona": "Z2 - Queima Gordura",
-          "cal": 419,
-          "pace": "19.9 km/h",
-          "cad": "",
-          "brac": "",
-          "sem": "S4",
-          "notes": "Outdoor cycling"
-        },
-        {
-          "data": "25/04/2026",
-          "hora": "08:18",
-          "dia": "Sáb",
-          "mod": "Bike",
-          "dur": 38.6,
-          "dist": 11.96,
-          "distM": 11957,
-          "fcm": 138,
-          "fcx": 161,
-          "zona": "Z2 - Queima Gordura",
-          "cal": 434,
-          "pace": "18.6 km/h",
-          "cad": "",
-          "brac": "",
-          "sem": "S4",
-          "notes": "Outdoor cycling"
-        },
-        {
-          "data": "26/04/2026",
-          "hora": "06:10",
-          "dia": "Dom",
-          "mod": "Outros",
-          "dur": 101.0,
-          "dist": 25.35,
-          "distM": 25353,
-          "fcm": 148,
-          "fcx": "",
-          "zona": "Z3 - Aeróbico",
-          "cal": 1233,
-          "pace": "",
-          "cad": "",
-          "brac": "",
-          "sem": "S4",
-          "notes": "Multisport"
-        }
-      ]
-    };
-
-    document.getElementById('gerado').textContent = D.gerado;
-
-    // ══════════════════════════════════════════════════════════════
-    // HELPERS
-    // ══════════════════════════════════════════════════════════════
-    const cor = (mod) => D.cores[mod] || '#8b5cf6';
-    const corAlpha = (mod, a) => {
-      const hex = cor(mod).replace('#', '');
-      const r = parseInt(hex.substr(0, 2), 16);
-      const g = parseInt(hex.substr(2, 2), 16);
-      const b = parseInt(hex.substr(4, 2), 16);
-      return `rgba(${r},${g},${b},${a})`;
-    };
-
-    // Detecta mobile para ajustar gráficos
-    const isMobile = window.innerWidth < 601;
-    const isTablet = window.innerWidth >= 601 && window.innerWidth < 1025;
-
-    // ══════════════════════════════════════════════════════════════
-    // OPÇÕES PADRÃO (responsivas)
-    // ══════════════════════════════════════════════════════════════
-    const defaultOpts = {
-      responsive: true,
-      maintainAspectRatio: false,
-      interaction: { mode: 'index', intersect: false },
-      plugins: {
-        tooltip: {
-          backgroundColor: 'rgba(15,23,42,0.95)',
-          titleColor: '#38bdf8',
-          bodyColor: '#f1f5f9',
-          borderColor: '#334155',
-          borderWidth: 1,
-          padding: isMobile ? 8 : 12,
-          cornerRadius: 8,
-          displayColors: true,
-          titleFont: { size: isMobile ? 11 : 13 },
-          bodyFont: { size: isMobile ? 10 : 12 },
-        },
-        legend: {
-          labels: {
-            color: '#94a3b8',
-            usePointStyle: true,
-            padding: isMobile ? 8 : 15,
-            font: { size: isMobile ? 10 : 12 },
-          },
-          position: isMobile ? 'bottom' : 'top',
-        }
-      },
-      scales: {
-        x: {
-          ticks: {
-            color: '#94a3b8',
-            maxRotation: isMobile ? 45 : 0,
-            autoSkip: true,
-            maxTicksLimit: isMobile ? 6 : 20,
-            font: { size: isMobile ? 9 : 11 },
-          },
-          grid: { color: 'rgba(51,65,85,0.3)' }
-        },
-        y: {
-          ticks: {
-            color: '#94a3b8',
-            font: { size: isMobile ? 9 : 11 },
-          },
-          grid: { color: 'rgba(51,65,85,0.3)' }
-        }
-      }
-    };
-
-    // Deep merge helper
-    function mergeOpts(base, extra) {
-      const result = JSON.parse(JSON.stringify(base));
-      function merge(target, source) {
-        for (const key in source) {
-          if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
-            if (!target[key]) target[key] = {};
-            merge(target[key], source[key]);
-          } else {
-            target[key] = source[key];
-          }
-        }
-      }
-      merge(result, extra);
-      return result;
-    }
-
-    // ══════════════════════════════════════════════════════════════
-    // CARDS
-    // ══════════════════════════════════════════════════════════════
-    const cardsEl = document.getElementById('cards');
-    const addCard = (valor, label) => {
-      cardsEl.innerHTML += `<div class="card"><div class="valor">${valor}</div><div class="label">${label}</div></div>`;
-    };
-    addCard(D.resumo.sessoes, 'Sessões');
-    addCard(D.resumo.horas + 'h', 'Volume Total');
-    addCard(D.resumo.km + ' km', 'Distância Total');
-    addCard(D.resumo.calorias.toLocaleString('pt-BR'), 'Calorias');
-    addCard(D.resumo.semanas, 'Semanas');
-    D.modalidades.forEach(m => addCard(D.resumo.sessoes_mod[m] || 0, m));
-
-    // ══════════════════════════════════════════════════════════════
-    // 1. VOLUME SEMANAL
-    // ══════════════════════════════════════════════════════════════
-    new Chart(document.getElementById('chartVolume'), {
-      type: 'bar',
-      data: {
-        labels: D.semanas,
-        datasets: D.modalidades.map(m => ({
-          label: m,
-          data: D.semanas.map(s => Math.round(D.volume[s]?.[m] || 0)),
-          backgroundColor: corAlpha(m, 0.8),
-          borderColor: cor(m),
-          borderWidth: 1,
-        }))
-      },
-      options: mergeOpts(defaultOpts, {
-        scales: {
-          x: { stacked: true },
-          y: { stacked: true, title: { display: !isMobile, text: 'Minutos', color: '#94a3b8' } }
-        },
-        plugins: {
-          tooltip: {
-            callbacks: {
-              afterBody: (items) => {
-                const sem = items[0].label;
-                let total = 0;
-                D.modalidades.forEach(m => { total += D.volume[sem]?.[m] || 0; });
-                return '\nTotal: ' + Math.round(total) + ' min (' + (total / 60).toFixed(1) + 'h)';
-              }
-            }
-          }
-        }
-      })
-    });
-
-    // ══════════════════════════════════════════════════════════════
-    // 2. DISTÂNCIA KM
-    // ══════════════════════════════════════════════════════════════
-    new Chart(document.getElementById('chartDistKm'), {
-      type: 'bar',
-      data: {
-        labels: D.semanas,
-        datasets: ['Corrida', 'Bike'].filter(m => D.modalidades.includes(m)).map(m => ({
-          label: m,
-          data: D.semanas.map(s => D.distKm[s]?.[m] || 0),
-          backgroundColor: corAlpha(m, 0.8),
-          borderColor: cor(m),
-          borderWidth: 1,
-        }))
-      },
-      options: mergeOpts(defaultOpts, {
-        scales: {
-          y: { title: { display: !isMobile, text: 'km', color: '#94a3b8' } }
-        }
-      })
-    });
-
-    // ══════════════════════════════════════════════════════════════
-    // 3. DISTÂNCIA NATAÇÃO
-    // ══════════════════════════════════════════════════════════════
-    new Chart(document.getElementById('chartDistM'), {
-      type: 'bar',
-      data: {
-        labels: D.semanas,
-        datasets: [{
-          label: 'Natação',
-          data: D.semanas.map(s => D.distM[s]?.['Natação'] || 0),
-          backgroundColor: corAlpha('Natação', 0.8),
-          borderColor: cor('Natação'),
-          borderWidth: 1,
-        }]
-      },
-      options: mergeOpts(defaultOpts, {
-        scales: {
-          y: { title: { display: !isMobile, text: 'metros', color: '#94a3b8' } }
-        }
-      })
-    });
-
-    // ══════════════════════════════════════════════════════════════
-    // 4. PACE
-    // ══════════════════════════════════════════════════════════════
-    new Chart(document.getElementById('chartPace'), {
-      type: 'line',
-      data: {
-        labels: D.semanas,
-        datasets: [
-          {
-            label: 'Corrida (min/km)',
-            data: D.semanas.map(s => D.paceCorrida[s] || null),
-            borderColor: cor('Corrida'),
-            backgroundColor: corAlpha('Corrida', 0.1),
-            fill: true, tension: 0.3,
-            pointRadius: isMobile ? 3 : 5,
-            pointHoverRadius: isMobile ? 6 : 8,
-            yAxisID: 'y',
-          },
-          {
-            label: 'Natação (min/100m)',
-            data: D.semanas.map(s => D.paceNatacao[s] || null),
-            borderColor: cor('Natação'),
-            backgroundColor: corAlpha('Natação', 0.1),
-            fill: true, tension: 0.3,
-            pointRadius: isMobile ? 3 : 5,
-            pointHoverRadius: isMobile ? 6 : 8,
-            yAxisID: 'y1',
-          }
-        ]
-      },
-      options: mergeOpts(defaultOpts, {
-        scales: {
-          y: {
-            position: 'left',
-            title: { display: !isMobile, text: 'min/km', color: '#ef4444' },
-            reverse: true,
-          },
-          y1: {
-            position: 'right',
-            title: { display: !isMobile, text: 'min/100m', color: '#0ea5e9' },
-            reverse: true,
-            grid: { drawOnChartArea: false },
-            ticks: { color: '#94a3b8', font: { size: isMobile ? 9 : 11 } },
-          }
-        },
-        plugins: {
-          tooltip: {
-            callbacks: {
-              label: (ctx) => {
-                if (ctx.raw === null) return '';
-                const min = Math.floor(ctx.raw);
-                const seg = Math.round((ctx.raw - min) * 60);
-                return ctx.dataset.label + ': ' + min + ':' + String(seg).padStart(2, '0');
-              }
-            }
-          }
-        }
-      })
-    });
-
-    // ══════════════════════════════════════════════════════════════
-    // 5. BIKE
-    // ══════════════════════════════════════════════════════════════
-    new Chart(document.getElementById('chartBike'), {
-      type: 'line',
-      data: {
-        labels: D.semanas,
-        datasets: [{
-          label: 'Velocidade Média',
-          data: D.semanas.map(s => D.velBike[s] || null),
-          borderColor: cor('Bike'),
-          backgroundColor: corAlpha('Bike', 0.1),
-          fill: true, tension: 0.3,
-          pointRadius: isMobile ? 3 : 5,
-          pointHoverRadius: isMobile ? 6 : 8,
-        }]
-      },
-      options: mergeOpts(defaultOpts, {
-        scales: {
-          y: { title: { display: !isMobile, text: 'km/h', color: '#94a3b8' } }
-        }
-      })
-    });
-
-    // ══════════════════════════════════════════════════════════════
-    // 6. FC MÉDIA
-    // ══════════════════════════════════════════════════════════════
-    new Chart(document.getElementById('chartFC'), {
-      type: 'line',
-      data: {
-        labels: D.semanas,
-        datasets: D.modalidades.map(m => ({
-          label: m,
-          data: D.semanas.map(s => D.fcMedia[s]?.[m] || null),
-          borderColor: cor(m),
-          backgroundColor: corAlpha(m, 0.1),
-          fill: false, tension: 0.3,
-          pointRadius: isMobile ? 3 : 5,
-          pointHoverRadius: isMobile ? 6 : 8,
-          spanGaps: true,
-        }))
-      },
-      options: mergeOpts(defaultOpts, {
-        scales: {
-          y: { title: { display: !isMobile, text: 'bpm', color: '#94a3b8' } }
-        }
-      })
-    });
-
-    // ══════════════════════════════════════════════════════════════
-    // 7. ZONAS FC
-    // ══════════════════════════════════════════════════════════════
-    const zonaCores = ['#3b82f6', '#22c55e', '#eab308', '#f97316', '#ef4444', '#a855f7'];
-    const zonaLabels = ["Abaixo Z1", "Z1 - Aquecimento", "Z2 - Queima Gordura", "Z3 - Aeróbico", "Z4 - Anaeróbico", "Z5 - VO2 Máx"];
-
-    new Chart(document.getElementById('chartZonas'), {
-      type: 'bar',
-      data: {
-        labels: D.semanas,
-        datasets: zonaLabels.map((z, i) => ({
-          label: isMobile ? z.split(' - ')[0] : z,
-          data: D.semanas.map(s => {
-            const total = Object.values(D.zonas[s] || {}).reduce((a, b) => a + b, 0);
-            return total > 0 ? Math.round((D.zonas[s]?.[z] || 0) / total * 100) : 0;
-          }),
-          backgroundColor: zonaCores[i] + 'cc',
-          borderColor: zonaCores[i],
-          borderWidth: 1,
-        }))
-      },
-      options: mergeOpts(defaultOpts, {
-        scales: {
-          x: { stacked: true },
-          y: {
-            stacked: true, max: 100,
-            title: { display: !isMobile, text: '%', color: '#94a3b8' }
-          }
-        }
-      })
-    });
-
-    // ══════════════════════════════════════════════════════════════
-    // 8. SESSÕES
-    // ══════════════════════════════════════════════════════════════
-    new Chart(document.getElementById('chartSessoes'), {
-      type: 'bar',
-      data: {
-        labels: D.semanas,
-        datasets: D.modalidades.map(m => ({
-          label: m,
-          data: D.semanas.map(s => D.sessoes[s]?.[m] || 0),
-          backgroundColor: corAlpha(m, 0.8),
-          borderColor: cor(m),
-          borderWidth: 1,
-        }))
-      },
-      options: mergeOpts(defaultOpts, {
-        scales: {
-          x: { stacked: true },
-          y: {
-            stacked: true,
-            title: { display: !isMobile, text: 'Sessões', color: '#94a3b8' },
-            ticks: { stepSize: 1 }
-          }
-        }
-      })
-    });
-
-    // ══════════════════════════════════════════════════════════════
-    // 9. TABELA + FILTROS
-    // ══════════════════════════════════════════════════════════════
-    let filtroAtivo = 'Todos';
-    const filtersEl = document.getElementById('filters');
-    const tabelaEl = document.getElementById('tabelaBody');
-
-    function renderFiltros() {
-      const mods = ['Todos', ...D.modalidades];
-      filtersEl.innerHTML = mods.map(m =>
-        `<button class="filter-btn ${m === filtroAtivo ? 'active' : ''}" onclick="filtrar('${m}')">${m}</button>`
-      ).join('');
-    }
-
-    function filtrar(mod) {
-      filtroAtivo = mod;
-      renderFiltros();
-      renderTabela();
-    }
-
-    function renderTabela() {
-      const dados = filtroAtivo === 'Todos'
-        ? D.tabela
-        : D.tabela.filter(r => r.mod === filtroAtivo);
-
-      tabelaEl.innerHTML = dados.map(r => {
-        const c = cor(r.mod);
-        const dist = r.mod === 'Natação' ? r.distM + 'm' : r.dist + 'km';
-        return `<tr>
-      <td>${r.data}</td><td>${r.hora}</td><td>${r.dia}</td>
-      <td><span class="mod-badge" style="background:${c}22;color:${c};border:1px solid ${c}44">${r.mod}</span></td>
-      <td>${r.dur} min</td><td>${dist}</td>
-      <td>${r.fcm || '-'}</td><td>${r.fcx || '-'}</td>
-      <td>${r.zona || '-'}</td><td>${r.cal}</td>
-      <td>${r.pace || '-'}</td><td>${r.sem}</td><td>${r.notes || '-'}</td>
-    </tr>`;
-      }).join('');
-    }
-
-    renderFiltros();
-    renderTabela();
-
-    // ══════════════════════════════════════════════════════════════
-    // RESIZE — Recalcula isMobile para tooltips dinâmicos
-    // ══════════════════════════════════════════════════════════════
-    let resizeTimer;
-    window.addEventListener('resize', () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(() => {
-        // Charts auto-resize via Chart.js responsive: true
-      }, 250);
-    });
-  </script>
-  <div class="sticky-cta" id="stickyCta" role="complementary" aria-label="Contato">
-    <div class="sticky-text">
-      <strong>Treinador</strong> — gero isso automaticamente para seus alunos.
-    </div>
-    <a class="sticky-wa"
-      href="https://wa.me/5511986599970?text=Oi%20Douglas%2C%20vi%20o%20Treinô%20e%20quero%20entender%20como%20funciona."
-      target="_blank" rel="noopener">
-      📱 WhatsApp
-    </a>
-    <button class="sticky-close" id="ctaClose" aria-label="Fechar">×</button>
-  </div>
-
-  <script>
-    (function () {
-      const cta = document.getElementById('stickyCta');
-      const close = document.getElementById('ctaClose');
-      if (!cta) return;
-
-      // Fecha e lembra por 24h
-      if (sessionStorage.getItem('ctaClosed') === '1') {
-        cta.remove();
-      } else {
-        document.body.classList.add('has-sticky');
-        close.addEventListener('click', function () {
-          cta.style.transition = 'opacity .25s, transform .25s';
-          cta.style.opacity = '0';
-          cta.style.transform = 'translateY(12px)';
-          setTimeout(function () {
-            cta.remove();
-            document.body.classList.remove('has-sticky');
-          }, 260);
-          sessionStorage.setItem('ctaClosed', '1');
-        });
-      }
-    })();
-
-    // ══════════════════════════════════════════════════════════
-    // TOAST — feedback visual
-    // ══════════════════════════════════════════════════════════
-    function showToast(msg, emoji = '✅') {
-      let toast = document.getElementById('shareToast');
-      if (!toast) {
-        toast = document.createElement('div');
-        toast.id = 'shareToast';
-        toast.className = 'share-toast';
-        document.body.appendChild(toast);
-      }
-      toast.textContent = emoji + '  ' + msg;
-      toast.classList.add('show');
-      clearTimeout(toast._timer);
-      toast._timer = setTimeout(() => toast.classList.remove('show'), 2800);
-    }
-
-    // ══════════════════════════════════════════════════════════
-    // 1. SALVAR COMO IMAGEM (html2canvas)
-    // ══════════════════════════════════════════════════════════
-    async function salvarImagem() {
-      const btn = document.getElementById('btnImg');
-      btn.classList.add('loading');
-      btn.innerHTML = `
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-         stroke="currentColor" stroke-width="2" class="spin">
-      <path d="M21 12a9 9 0 1 1-6.219-8.56"/>
-    </svg>
-    Gerando...`;
-
-      // Esconde elementos desnecessários na captura
-      const esconder = document.querySelectorAll(
-        '.share-bar, .sticky-cta, .banner-cta, .filter-bar, #filters'
-      );
-      esconder.forEach(el => el.style.visibility = 'hidden');
-
-      try {
-        const canvas = await html2canvas(document.body, {
-          backgroundColor: '#0f172a',
-          scale: 2,              // Alta resolução
-          useCORS: true,
-          allowTaint: true,
-          scrollX: 0,
-          scrollY: -window.scrollY,
-          windowWidth: document.documentElement.scrollWidth,
-          windowHeight: document.documentElement.scrollHeight,
-          ignoreElements: (el) =>
-            el.classList?.contains('share-bar') ||
-            el.classList?.contains('sticky-cta') ||
-            el.classList?.contains('banner-cta'),
-        });
-
-        // Download automático
-        const link = document.createElement('a');
-        const atleta = (D?.atleta || 'atleta').toLowerCase().replace(/\s+/g, '-');
-        const data = new Date().toISOString().slice(0, 10);
-        link.download = `triathlon-${atleta}-${data}.png`;
-        link.href = canvas.toDataURL('image/png');
-        link.click();
-
-        showToast('Imagem salva com sucesso!', '📸');
-        btn.classList.add('success');
-        setTimeout(() => btn.classList.remove('success'), 2000);
-
-      } catch (err) {
-        showToast('Erro ao gerar imagem. Tente novamente.', '❌');
-        console.error(err);
-      } finally {
-        esconder.forEach(el => el.style.visibility = '');
-        btn.classList.remove('loading');
-        btn.innerHTML = `
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-           stroke="currentColor" stroke-width="2">
-        <rect x="3" y="3" width="18" height="18" rx="2"/>
-        <circle cx="8.5" cy="8.5" r="1.5"/>
-        <path d="m21 15-5-5L5 21"/>
-      </svg>
-      Salvar imagem`;
-      }
-    }
-
-    // ══════════════════════════════════════════════════════════
-    // 2. COMPARTILHAR NATIVO (mobile)
-    // ══════════════════════════════════════════════════════════
-    async function compartilharNativo() {
-      const urlAtual = window.location.href;
-      const atleta = D?.atleta || 'Atleta';
-
-      // Tenta Web Share API (mobile)
-      if (navigator.share) {
-        try {
-          await navigator.share({
-            title: `Relatório Triathlon — ${atleta}`,
-            text: `Veja a evolução de ${atleta} no triathlon 🏊🚴🏃`,
-            url: urlAtual,
-          });
-          showToast('Compartilhado!', '🚀');
-        } catch (err) {
-          if (err.name !== 'AbortError') {
-            showToast('Não foi possível compartilhar.', '❌');
-          }
-        }
-      } else {
-        // Fallback desktop: copia o link
-        copiarLink();
-      }
-    }
-
-    // ══════════════════════════════════════════════════════════
-    // 3. COPIAR LINK
-    // ══════════════════════════════════════════════════════════
-    async function copiarLink() {
-      const btn = document.getElementById('btnLink');
-      const textEl = document.getElementById('linkBtnText');
-      const urlAtual = window.location.href;
-
-      try {
-        await navigator.clipboard.writeText(urlAtual);
-        textEl.textContent = 'Link copiado!';
-        btn.classList.add('success');
-        showToast('Link copiado! Cole onde quiser.', '🔗');
-        setTimeout(() => {
-          textEl.textContent = 'Copiar link';
-          btn.classList.remove('success');
-        }, 2500);
-      } catch {
-        // Fallback para browsers mais antigos
-        const input = document.createElement('input');
-        input.value = urlAtual;
-        document.body.appendChild(input);
-        input.select();
-        document.execCommand('copy');
-        document.body.removeChild(input);
-        showToast('Link copiado!', '🔗');
-      }
-    }
-
-    // Animação do ícone de loading
-    const styleSpinner = document.createElement('style');
-    styleSpinner.textContent = `
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .spin { animation: spin 0.8s linear infinite; }
-`;
-    document.head.appendChild(styleSpinner);
-
-  </script>
-
 </body>
-
 </html>
